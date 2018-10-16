@@ -1,0 +1,6 @@
+npm install --save leaflet @types/leaflet
+npm install --save @types/leaflet-draw
+npm install --save @types/leaflet.gridlayer.googlemutant
+
+npm install --save highcharts @types/highcharts
+npm install --save highcharts/highcharts-angular

@@ -1,0 +1,108 @@
+<div role="main" class="container">
+  <!-- <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-primary rounded box-shadow">
+    <div class="lh-100">
+      <h4 class="mb-0 text-white lh-100">ฐานข้อมูลหลังคาเรือน อ.วิเชียรบุรี จ.เพชรบูรณ์</h4>
+    </div>
+  </div> -->
+
+  <div class="row">
+    <div class="col col-lg-9 col-12">
+      <div class="my-3 p-3 bg-white rounded box-shadow">
+        <h6 class="border-bottom border-gray pb-2 mb-0">แผนที่</h6>
+        <div class="media text-muted pt-3">
+          <div id="map" class="map"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col col-lg-3 col-12">
+      <div class="my-3 p-3 bg-white rounded box-shadow">
+        <h6 class="border-bottom border-gray pb-2 mb-0">ชั้นข้อมูล</h6>
+        <div class="media text-muted pt-3">
+          <div class="layer">
+            <div>
+              <label>
+                <input (change)="onCheckJson('flood', $event.target.checked)" type="checkbox" [checked]="parcelCheck">
+                พื้นที่เสี่ยงภัยน้ำท่วม
+              </label>
+              <div *ngIf="parcelCheck">
+                <img src="http://www.cgi.uru.ac.th/geoserver/wms?service=WMS&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=upn:parcel_3857">
+              </div>
+            </div>
+
+            <div>
+              <label>
+                <input (change)="onCheckJson('pro', $event.target.checked)" type="checkbox" [checked]="proCheck">
+                ขอบเขตจังหวัด
+              </label>
+              <div *ngIf="proCheck">
+                <img src="http://www3.cgistln.nu.ac.th/geoserver/wms?service=WMS&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=gistdata:province">
+              </div>
+            </div>
+
+            <div>
+              <label>
+                <input (change)="onCheckJson('amp', $event.target.checked)" type="checkbox" [checked]="ampCheck">
+                ขอบเขตอำเภอ
+              </label>
+              <div *ngIf="ampCheck">
+                <img src="http://www3.cgistln.nu.ac.th/geoserver/wms?service=WMS&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=gistdata:amphoe">
+              </div>
+            </div>
+
+            <div>
+              <label>
+                <input (change)="onCheckJson('tam', $event.target.checked)" type="checkbox" [checked]="tamCheck">
+                ขอบเขตตำบล
+              </label>
+              <div *ngIf="tamCheck">
+                <img src="http://www3.cgistln.nu.ac.th/geoserver/wms?service=WMS&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=gistdata:tambon">
+              </div>
+            </div>
+
+            <hr>
+            <div class="form-group">เลือกแผนที่ฐาน
+              <p></p>
+              <select class="form-control" (change)="onSelect($event.target.value)">
+                <option value="grod" selected>แผนที่ถนน (Road)</option>
+                <option value="ghyb">แผนที่ดาวเทียม (Sattlelite)</option>
+                <option value="gter">แผนที่ภูมิประเทศ (Terrain)</option>
+                <option value="mbox">แผนที่ผสม OSM</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="my-3 p-3 bg-white rounded box-shadow">
+        <h6 class="border-bottom border-gray pb-2 mb-0">สนับสนุนโดย</h6>
+        <div class="media text-muted pt-3">
+          <div class="buffer">
+            <div class="form-group">
+              งานวิจัยนี้ได้รับทุนอุดหนุนการวิจัยจากงบประมาณแผ่นดิน มหาวิทยาลัยราชภัฏอุตรดิตถ์ ปีงบประมาณ 2561
+
+              <img src="./assets/img/logouru2011.png" height="100">
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+    </div>
+  </div>
+
+
+  <!-- <div class="my-3 p-3 bg-white rounded box-shadow">
+    <h6 class="border-bottom border-gray pb-2 mb-0">แปลงที่ถูกเลือก</h6>
+    <div class="ex3">
+      <div class="media text-muted pt-3" *ngFor="let p of parcelAll; let i = index">
+        <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray" (click)="onClickList(p.geometry.coordinates[0][0])">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <strong class="text-gray-dark">{{i+1}}. ชื่อ {{p.properties.f_name}}
+            </strong>
+          </div>
+          <span class="d-block">ต.{{p.properties.tambon}} อ.{{p.properties.amphoe}} จ.{{p.properties.province}}</span>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+</div>
