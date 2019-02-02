@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import { DataService } from '../services/data.service';
+import { async } from '@angular/core/testing';
 
 @Component({
   selector: 'app-home',
@@ -22,6 +23,7 @@ export class HomeComponent implements OnInit {
   public amp: any;
   public pro: any;
   public parcel: any;
+  public mobileAdd: any;
 
   public flood: any;
 
@@ -81,6 +83,16 @@ export class HomeComponent implements OnInit {
     const cgiUrl = 'http://www.cgi.uru.ac.th/geoserver/ows?';
     const flood = 'http://www.cgi.uru.ac.th/gs-flood/ows?';
 
+
+    this.mobileAdd = L.tileLayer.wms(cgiUrl, {
+      layers: 'upn:mobile_report',
+      format: 'image/png',
+      transparent: true,
+      zIndex: 5,
+      tiled: false,
+      // CQL_FILTER: 'prov_code=53'
+    });
+
     this.parcel = L.tileLayer.wms(cgiUrl, {
       layers: 'upn:parcel_3857',
       format: 'image/png',
@@ -122,6 +134,7 @@ export class HomeComponent implements OnInit {
     };
 
     const overlayLayers = {
+      'ข้อมูลจากภาคสนาม': this.mobileAdd.addTo(this.map),
       'ขอบเขตพื้นที่ชุมชน': this.parcel.addTo(this.map),
       'ขอบเขตจังหวัด': this.pro.addTo(this.map),
       'ขอบเขตอำเภอ': this.amp.addTo(this.map),
@@ -139,47 +152,30 @@ export class HomeComponent implements OnInit {
       const latlng = e.latlng;
       if (this.parcelCheck) {
         // popupInfo
-        this.dataService.getParcelInfo(latlng.lng, latlng.lat).then((res: any) => {
-          if (res.totalFeatures > 0) {
-            L.popup({
-              maxWidth: 400, // offset: [5, -25]
-            }).setLatLng([latlng.lat, latlng.lng])
-              .setContent(
-                //   '<span id="kanit13">build</span>: ' + res.features[0].properties.hs_no +
-                // '<br> <span id="kanit13">hs-no</span>: ' + res.features[0].properties.building_c
-
-                '<br> <span id="kanit13">เลขที่โฉนด</span>: ' + res.features[0].properties.id +
-                '<br> <span id="kanit13">ชื่อ-สกุล</span>: ' + res.features[0].properties.f_name +
-                '<br> <span id="kanit13">ที่อยู่</span>: ' + res.features[0].properties.vill_no +
-                ' หมู่ ' + res.features[0].properties.moo +
-                ' ต. ' + res.features[0].properties.tambon +
-                ' อ. ' + res.features[0].properties.amphoe +
-                ' จ. ' + res.features[0].properties.province +
-                '<br> <span id="kanit13">เบอร์โทร</span>: ' + res.features[0].properties.tel +
-                '<br> <span id="kanit13">จำนวนต้นมะม่วงหิมพานต์ </span>: ' + res.features[0].properties.total +
-                '<br> <span id="kanit13">จำนวนต้นที่ให้ผลผลิตแล้ว</span>: ' + res.features[0].properties.produce +
-                '<br> <span id="kanit13">จำนวนต้นที่ยังไม่ให้ผลผลิต</span>: ' + res.features[0].properties.noproduce +
-                '<br> <span id="kanit13">ปริมาณผลผลิต (กก./ปี)</span>: ' + res.features[0].properties.result +
-                '<br> <span id="kanit13">กรรมสิทธิ์การถือครองที่ดิน </span>: ' + res.features[0].properties.f_right +
-                '<br> <span id="kanit13">ต้นทุนการผลิต (บาท/ปี)</span>: ' + res.features[0].properties.f_cost +
-                '<br> <span id="kanit13">ค่าปุ๋ย/ยา  (บาท/ปี)</span>: ' + res.features[0].properties.drug +
-                '<br> <span id="kanit13">ค่าแรงงาน (บาท/ปี)</span>: ' + res.features[0].properties.labor +
-                '<br> <span id="kanit13">ค่าขนส่ง (บาท/ปี)</span>: ' + res.features[0].properties.trans +
-                '<br> <span id="kanit13">เนื้อที่</span>: ' + res.features[0].properties.rai + ' ไร่ ' +
-                res.features[0].properties.ngan + ' งาน ' + res.features[0].properties.wa + ' วา ' +
-                '<br> <span id="kanit13">รายจ่ายในการปลูก </span>: ' + res.features[0].properties.expend +
-                '<br> <span id="kanit13">รายได้ในการปลูก</span>: ' + res.features[0].properties.income +
-                '<br> <span id="kanit13">แหล่งเงินทุนในการปลูก</span>: ' + res.features[0].properties.fund +
-                '<br> <span id="kanit13">แหล่งน้ำที่ใช้ในการปลูก</span>: ' + res.features[0].properties.water +
-                '<br> <span id="kanit13">ชนิดของปุ๋ยที่ใส่</span>: ' + res.features[0].properties.fertil +
-                '<br> <span id="kanit13">โรคที่พบ</span>: ' + res.features[0].properties.disease
-
-              ).openOn(this.map);
-          }
-        });
+        this.getFeatureInfo(latlng.lng, latlng.lat);
       }
     });
     this.loadParcel();
+  }
+
+  async getFeatureInfo(lng: number, lat: number) {
+    await this.dataService.getParcelInfo(lng, lat).then((res: any) => {
+      // console.log(res.feature[0]);
+      if (res.totalFeatures > 0) {
+        L.popup({
+          maxWidth: 400, // offset: [5, -25]
+        }).setLatLng([lat, lng])
+          .setContent(
+            '<br> <span id="kanit13">รหัสผู้ใช้</span>: ' + res.features[0].properties.id_user +
+            '<br> <span id="kanit13">lat</span>: ' + res.features[0].properties.lat +
+            '<span id="kanit13"> lon</span>:' + res.features[0].properties.lon +
+            '<br> <span id="kanit13">สถานที่</span>: ' + res.features[0].properties.pname +
+            '<br> <span id="kanit13">คำอธิบาย</span>: ' + res.features[0].properties.pdesc +
+            // '<br> <span id="kanit13">รูปภาพ</span>: <br><img height="240px" src="' + res.feature[0].properties.photo + ' ">' +
+            '<br> <span id="kanit13">วันที่รายงาน</span>: ' + res.features[0].properties.pdate
+          ).openOn(this.map);
+      }
+    });
   }
 
   loadParcel() {

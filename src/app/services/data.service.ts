@@ -13,10 +13,13 @@ export class DataService {
   ) {
   }
 
+
+
+
   getParcelInfo(lon: number, lat: number) {
     return new Promise((resolve, reject) => {
-      this.http.get(this.cgiUrl + '&typeName=cashew:cashew_4326&CQL_FILTER=INTERSECTS(geom,POINT(' +
-        lon + '%20' + lat + '))&outputFormat=application%2Fjson')
+      this.http.get(this.cgiUrl + '&typeName=upn:mobile_report&CQL_FILTER=DWITHIN(geom,POINT(' +
+        lon + '%20' + lat + '),10,meters)&outputFormat=application%2Fjson')
         .subscribe((res: any) => {
           resolve(res);
         }, (error) => {
